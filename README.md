@@ -1,114 +1,60 @@
-# Gauge-Java
+# gauge-kotlin
 
-[![Actions Status](https://github.com/getgauge/gauge-java/workflows/tests/badge.svg)](https://github.com/getgauge/gauge-java/actions)
-[![Maven Central Version](https://img.shields.io/maven-central/v/com.thoughtworks.gauge/gauge-java)](https://central.sonatype.com/artifact/com.thoughtworks.gauge/gauge-java)
-[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v1.4%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
+[English](README.md) | [日本語](README.ja.md)
 
-This project adds java [language plugin](https://gauge.org/plugins/) for [gauge](https://gauge.org/).
+> **Unofficial, community-maintained fork.**
+> This project is a fork of [getgauge/gauge-java](https://github.com/getgauge/gauge-java). It is not affiliated with, endorsed by, or supported by the Gauge project or ThoughtWorks, Inc.
 
-## Getting started
+gauge-kotlin aims to make [Gauge](https://gauge.org/) understand step implementations written in **Kotlin** (`.kt`), on top of the existing Java language plugin.
 
-### Pre-requisite
+## Status
 
-- [Install Gauge](https://docs.gauge.org/getting_started/installing-gauge.html)
-- [Java](https://www.java.com/en/download/) (Minimum required version is 17)
+**Work in progress. Not ready for use.**
 
-### Installation
+At this point the code is the same as upstream gauge-java.
 
-```
-gauge install java
-```
+## Goals
 
-### Create a gauge-java project
+The runtime (executing steps via reflection, hooks, gRPC, classpath handling) is reused from gauge-java as is. Only the parts that read and write source code are added in Kotlin, so that they understand `.kt` files:
 
-```
-gauge init java
-```
+- [ ] Kotlin build: compile Kotlin sources in the same Maven module as the existing Java code
+- [ ] Verify that Gauge can execute Kotlin step implementations (top-level functions, `object` / `companion object`, default arguments)
+- [ ] Static analysis: register `@Step` texts (including aliases) and line numbers found in `.kt` files
+- [ ] Cache: reflect edits and deletions of `.kt` files in the step list
+- [ ] Stub generation: generate Kotlin stubs for unimplemented steps
+- [ ] Refactoring: renaming a step or changing its parameters also rewrites the `.kt` source
 
-### Run tests
+The package name `com.thoughtworks.gauge` is kept unchanged, so that existing step code that imports `com.thoughtworks.gauge.Step` keeps working. New Kotlin code lives in sub-packages such as `com.thoughtworks.gauge.kotlin`.
 
-```
-gauge run specs
-```
+## Build from source
 
-### Alternate Installation options
+Requirements:
 
-#### Install specific version
-* Installing specific version
-```
-gauge install java --version 0.10.1
-```
+- Java 17 or later
+- [Maven](https://maven.apache.org/)
+- [Go](https://go.dev/) (for the build script and the launcher)
+- [Gauge](https://docs.gauge.org/getting_started/installing-gauge.html) (to install and run the plugin)
 
-#### Offline installation
-* Download the plugin from [Releases](https://github.com/getgauge/gauge-java/releases)
-```
-gauge install java --file gauge-java-0.10.1-windows.x86_64.zip
-```
+```sh
+# Run unit tests
+mvn test
 
-#### Build from source
-
-The plugin is authored in [Java](https://en.wikipedia.org/wiki/Java_(programming_language)).
-Gauge is authored in golang. These are independent processes talking to each other over TCP on port GAUGE_INTERNAL_PORT (env variable) using [Protobuf](https://github.com/getgauge/gauge-proto).
-
-##### Additional Requirements
-Apart from [Gauge](https://gauge.org/index.html) and [Java](https://www.java.com/en/download/index.jsp) you will need
-
-* [Maven](https://maven.apache.org/)
-* [JQ](https://stedolan.github.io/jq/) (for unix)
-##### Compiling
-
-````
+# Compile
 go run build/make.go
-````	
 
-For cross platform compilation (launcher)	
+# Install the plugin into Gauge
+go run build/make.go --install
+```
 
-````	
-go run build/make.go --all-platforms
-````
-
-##### Installing
-
-After compilation
-
-````	
-go run build/make.go --install	
-````	
-
-Installing to a CUSTOM_LOCATION	
-
-
-````
-go run build/make.go --install --plugin-prefix CUSTOM_LOCATION
-````
-
-##### Creating distributable
-
-Note: Run after compiling
-````	
-go run build/make.go --distro	
-````	
-
-
-For distributable across platforms os, windows and linux for bith x86 and x86_64	
-
-````	
-go run build/make.go --distro --all-platforms	
-````
-
-
-## Deployment
-
-The deployments are managed via Github Actions. Whenever a PR is merged and contains label `ReleaseCandidate`, A deployment will occur with the current version and then the version will be bumped up.
-
+See [README of gauge-java](https://github.com/getgauge/gauge-java#build-from-source) for more build options.
 
 ## License
 
-This program is licensed under:
+Licensed under the [Apache License, Version 2.0](LICENSE.txt).
 
-Apache License, Version 2.0
+- Original work: Copyright ThoughtWorks, Inc.
+- Modifications and additions in this fork: Copyright Itsuki Yamada
 
-## Copyright
+Third-party dependencies are listed in [notice.md](notice.md).
 
-Copyright ThoughtWorks, Inc.
-
+"Gauge" is used only to describe compatibility. This fork does not use the Gauge logo.
