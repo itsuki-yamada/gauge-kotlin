@@ -150,6 +150,11 @@
             </exclusions>
         </dependency>
         <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib</artifactId>
+            <version>${kotlin.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
             <scope>test</scope>
@@ -272,6 +277,15 @@
                     <autoPublish>true</autoPublish>
                 </configuration>
             </plugin>
+            <!-- Kotlin support (gauge-kotlin fork). extensions=true adds src/main/kotlin and
+                 src/test/kotlin as source roots and compiles Kotlin before Java, so Java and
+                 Kotlin can refer to each other. -->
+            <plugin>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-maven-plugin</artifactId>
+                <version>${kotlin.version}</version>
+                <extensions>true</extensions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -369,6 +383,9 @@
 
         <protobuf.version>4.36.2</protobuf.version>
         <grpc.version>1.85.1</grpc.version>
+
+        <kotlin.version>2.4.21</kotlin.version>
+        <kotlin.compiler.jvmTarget>${java.version}</kotlin.compiler.jvmTarget>
     </properties>
 
 </project>
