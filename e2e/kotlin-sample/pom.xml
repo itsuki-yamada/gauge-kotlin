@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Acceptance sample for gauge-kotlin: Maven + manifest Language "java" + steps in src/test/kotlin. -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>sample</groupId>
+    <artifactId>gauge-kotlin-sample</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java.version>17</java.version>
+        <maven.compiler.release>${java.version}</maven.compiler.release>
+        <kotlin.version>2.4.21</kotlin.version>
+        <kotlin.compiler.jvmTarget>${java.version}</kotlin.compiler.jvmTarget>
+        <!-- The fork's version. Install it with `mvn install` at the repository root. -->
+        <gauge-java.version>1.0.6</gauge-java.version>
+        <!-- Scenarios that do not work yet are tagged known-issue.
+             Run them with: mvn test -Dgauge.tags=known-issue -->
+        <gauge.tags>!known-issue</gauge.tags>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.thoughtworks.gauge</groupId>
+            <artifactId>gauge-java</artifactId>
+            <version>${gauge-java.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib</artifactId>
+            <version>${kotlin.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-maven-plugin</artifactId>
+                <version>${kotlin.version}</version>
+                <extensions>true</extensions>
+            </plugin>
+            <plugin>
+                <groupId>com.thoughtworks.gauge.maven</groupId>
+                <artifactId>gauge-maven-plugin</artifactId>
+                <version>2.0.0</version>
+                <executions>
+                    <execution>
+                        <phase>test</phase>
+                        <configuration>
+                            <specsDir>specs</specsDir>
+                            <tags>${gauge.tags}</tags>
+                        </configuration>
+                        <goals>
+                            <goal>execute</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
