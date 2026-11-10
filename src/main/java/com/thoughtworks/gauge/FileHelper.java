@@ -2,6 +2,7 @@
  *  Copyright (c) ThoughtWorks, Inc.
  *  Licensed under the Apache License, Version 2.0
  *  See LICENSE.txt in the project root for license information.
+ *  Modified by gauge-kotlin: also collect Kotlin (.kt) implementation files.
  *----------------------------------------------------------------*/
 package com.thoughtworks.gauge;
 
@@ -23,13 +24,14 @@ import static com.thoughtworks.gauge.GaugeConstant.DEFAULT_SRC_DIRS;
 public class FileHelper {
     private static final String CUSTOM_COMPILE_DIR_SEPARATOR = ",";
     private static final String JAVA_FILE_EXT = ".java";
+    private static final String KOTLIN_FILE_EXT = ".kt";
 
     public static List<String> getAllImplementationFiles() {
         ArrayList<String> outputFiles = new ArrayList<>();
         getStepImplDirs().forEach(dir -> {
             try (Stream<Path> filePathStream = Files.walk(Path.of(dir))) {
                 filePathStream.forEach(filePath -> {
-                    if (Files.isRegularFile(filePath) && filePath.toString().endsWith(JAVA_FILE_EXT)) {
+                    if (Files.isRegularFile(filePath) && isImplementationFile(filePath)) {
                         outputFiles.add(filePath.toString());
                     }
                 });
@@ -43,6 +45,11 @@ public class FileHelper {
     private static Path getAbsolutePath(String dir) {
         Path path = Path.of(dir);
         return !path.isAbsolute() ? Path.of(System.getenv(GAUGE_PROJECT_ROOT), dir) : path;
+    }
+
+    private static boolean isImplementationFile(Path filePath) {
+        String name = filePath.toString();
+        return name.endsWith(JAVA_FILE_EXT) || name.endsWith(KOTLIN_FILE_EXT);
     }
 
     static List<String> getStepImplDirs() {

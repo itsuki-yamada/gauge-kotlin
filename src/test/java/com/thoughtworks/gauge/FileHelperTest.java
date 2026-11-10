@@ -2,6 +2,7 @@
  *  Copyright (c) ThoughtWorks, Inc.
  *  Licensed under the Apache License, Version 2.0
  *  See LICENSE.txt in the project root for license information.
+ *  Modified by gauge-kotlin: expect the Kotlin source directories as well.
  *----------------------------------------------------------------*/
 package com.thoughtworks.gauge;
 
@@ -70,10 +71,12 @@ public class FileHelperTest {
         List<String> stepImplDirs = withEnvironmentVariable(GAUGE_PROJECT_ROOT, gaugeProjRoot)
             .execute(FileHelper::getStepImplDirs);
 
-        assertEquals(2, stepImplDirs.size());
+        assertEquals(4, stepImplDirs.size());
         List<String> expectedImplDirs = List.of(
             String.format("%s%ssrc%smain%sjava", gaugeProjRoot, File.separator, File.separator, File.separator),
-            String.format("%s%ssrc%stest%sjava", gaugeProjRoot, File.separator, File.separator, File.separator)
+            String.format("%s%ssrc%stest%sjava", gaugeProjRoot, File.separator, File.separator, File.separator),
+            String.format("%s%ssrc%smain%skotlin", gaugeProjRoot, File.separator, File.separator, File.separator),
+            String.format("%s%ssrc%stest%skotlin", gaugeProjRoot, File.separator, File.separator, File.separator)
         );
         assertTrue(expectedImplDirs.containsAll(stepImplDirs));
     }
