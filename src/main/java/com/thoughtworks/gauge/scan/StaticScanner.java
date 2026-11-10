@@ -2,6 +2,7 @@
  *  Copyright (c) ThoughtWorks, Inc.
  *  Licensed under the Apache License, Version 2.0
  *  See LICENSE.txt in the project root for license information.
+ *  Modified by gauge-kotlin: scan Kotlin (.kt) files with KotlinStepScanner.
  *----------------------------------------------------------------*/
 package com.thoughtworks.gauge.scan;
 
@@ -10,6 +11,7 @@ import com.github.javaparser.ParseResult;
 import com.github.javaparser.ast.CompilationUnit;
 import com.thoughtworks.gauge.FileHelper;
 import com.thoughtworks.gauge.Logger;
+import com.thoughtworks.gauge.kotlin.KotlinStepScanner;
 import com.thoughtworks.gauge.registry.StepRegistry;
 
 import java.io.IOException;
@@ -24,6 +26,8 @@ import java.util.List;
 import static com.thoughtworks.gauge.GaugeConstant.PACKAGE_TO_SCAN;
 
 public class StaticScanner {
+
+    private static final String KOTLIN_FILE_EXT = ".kt";
 
     private final StepRegistry stepRegistry;
 
@@ -42,6 +46,10 @@ public class StaticScanner {
     }
 
     public void addStepsFromFileContents(String file, String contents) {
+        if (file.endsWith(KOTLIN_FILE_EXT)) {
+            KotlinStepScanner.addSteps(stepRegistry, file, contents, System.getenv(PACKAGE_TO_SCAN));
+            return;
+        }
         StringReader reader = new StringReader(contents);
         ParseResult<CompilationUnit> result = new JavaParser().parse(reader);
         boolean shouldScan = result.getResult().map(this::shouldScan).orElse(false);

@@ -154,6 +154,12 @@
             <artifactId>kotlin-stdlib</artifactId>
             <version>${kotlin.version}</version>
         </dependency>
+        <!-- gauge-kotlin: the Kotlin compiler's PSI is used to parse .kt step implementations. -->
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-compiler-embeddable</artifactId>
+            <version>${kotlin.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
@@ -236,6 +242,13 @@
                 <version>3.12.0</version>
                 <configuration>
                     <excludePackageNames>com.google.protobuf</excludePackageNames>
+                    <!-- gauge-kotlin: javadoc reads only .java files. Give it the compiled classes as well,
+                         so that Java code that uses Kotlin classes can be resolved. This option replaces
+                         the classpath, so the dependencies (javadoc.dependency.classpath) are added too. -->
+                    <additionalOptions>
+                        <additionalOption>--class-path</additionalOption>
+                        <additionalOption>${project.build.outputDirectory}${path.separator}${javadoc.dependency.classpath}</additionalOption>
+                    </additionalOptions>
                 </configuration>
                 <executions>
                     <execution>
@@ -328,6 +341,18 @@
                 <artifactId>maven-dependency-plugin</artifactId>
                 <version>3.11.0</version>
                 <executions>
+                    <!-- gauge-kotlin: classpath for javadoc (see maven-javadoc-plugin). -->
+                    <execution>
+                        <id>javadoc-classpath</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>build-classpath</goal>
+                        </goals>
+                        <configuration>
+                            <outputProperty>javadoc.dependency.classpath</outputProperty>
+                            <includeScope>compile</includeScope>
+                        </configuration>
+                    </execution>
                     <execution>
                         <id>copy-dependencies</id>
                         <phase>package</phase>
